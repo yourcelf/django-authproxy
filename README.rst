@@ -15,6 +15,8 @@ Get it into your path.  This ought to work::
 
     pip install -e http://github.com/yourcelf/django-authproxy.git
 
+You must also install the `gevent` dependency.
+
 Usage
 ~~~~~
 
