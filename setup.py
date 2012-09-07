@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name = 'django-mailman',
+    name = 'django-authproxy',
     version = '0.0.1',
     packages = ['authproxy',],
     platforms = ['any'],
