@@ -26,7 +26,7 @@ Add `authproxy` to your `INSTALLED_APPS`, and then add an AUTH_PROXIES setting, 
         'authorize': 'myapp.auth.proveit' # auth function
     }, ...)
 
-The `authorize` function should take a single Django `request` object as its argument, and return True / False for whether the connection is authorized.
+The `authorize` function should take a single Django `HttpRequest` object as its argument, and return True / False for whether the connection is authorized.
 
 Start the proxy server(s) with::
 
