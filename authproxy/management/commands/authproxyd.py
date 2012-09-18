@@ -41,7 +41,7 @@ class DjangoizedHttpRequest(HttpRequest):
         super(DjangoizedHttpRequest, self).__init__(*args, **kwargs)
         self.method = self.phr.command.upper()
         self.path = self.phr.path
-        self.COOKIES = parse_cookie(self.phr.headers.get('Cookie'))
+        self.COOKIES = parse_cookie(self.phr.headers.get('Cookie', ''))
 
 class PortForwarder(StreamServer):
     def __init__(self, listener_addr, backend_addr, auth_func, **kwargs):
