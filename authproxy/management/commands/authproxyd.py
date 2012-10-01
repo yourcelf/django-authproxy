@@ -36,12 +36,14 @@ class DjangoizedHttpRequest(HttpRequest):
     Light alternative to WSGIRequest or ModPythonRequest that uses our raw
     python http request
     """
-    def __init__(self, fh, *args, **kwargs):
+    def __init__(self, fh, client, *args, **kwargs):
         self.phr = PythonHttpRequest(fh)
         super(DjangoizedHttpRequest, self).__init__(*args, **kwargs)
         self.method = self.phr.command.upper()
         self.path = self.phr.path
         self.COOKIES = parse_cookie(self.phr.headers.get('Cookie', ''))
+        self.META['REMOTE_ADDR'] = client.getpeername()[0]
+        self.META['HTTP_X_FORWARDED_FOR'] = self.phr.headers.get('X-Forwarded-For')
 
 class PortForwarder(StreamServer):
     def __init__(self, listener_addr, backend_addr, auth_func, **kwargs):
@@ -93,7 +95,9 @@ def forward_request(client, backend, auth_func):
             if header_end:
                 headers.write(header_end)
                 # Build a Django flavor HttpRequest from the raw headers
-                request = DjangoizedHttpRequest(StringIO(headers.getvalue()))
+                request = DjangoizedHttpRequest(
+                    StringIO(headers.getvalue()), client
+                )
                 # Run it through the middleware we need
                 SessionMiddleware().process_request(request)
                 AuthenticationMiddleware().process_request(request)
